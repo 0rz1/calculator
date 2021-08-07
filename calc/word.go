@@ -1,6 +1,9 @@
 package calc
 
-import "strconv"
+import (
+	"fmt"
+	"strconv"
+)
 
 type wordType int
 
@@ -22,7 +25,7 @@ func (w *word) Valid() bool {
 		return w.val == "(" || w.val == ")"
 	case wt_number:
 		_, err := strconv.ParseFloat(w.val, 64)
-		return err != nil
+		return err == nil
 	case wt_operation:
 		_, ok := pickOp(w.val)
 		return ok
@@ -71,42 +74,56 @@ func splitWord(bs []byte) (words []word) {
 	return
 }
 
-func checkGrammer(words []word) bool {
+func checkGrammer(words []word) error {
 	pCnt := 0
 	readNumOrOp := true
 	for _, w := range words {
 		if !w.Valid() {
-			return false
+			err := WordValidErr(w)
+			return &err
 		}
 		switch w.wt {
 		case wt_number:
 			if !readNumOrOp {
-				return false
+				err := GrammerErr("need op but number")
+				return &err
 			}
 			readNumOrOp = false
 		case wt_operation:
 			if readNumOrOp {
-				return false
+				err := GrammerErr("need number but op")
+				return &err
 			}
 			readNumOrOp = true
 		case wt_parentheses:
 			shouldReadNumOrOp := w.val == "("
 			if shouldReadNumOrOp != readNumOrOp {
-				return false
+				err := GrammerErr(fmt.Sprintf("before %v is not right type", w.val))
+				return &err
 			}
 			if w.val == "(" {
 				pCnt++
 			} else {
 				pCnt--
 				if pCnt < 0 {
-					return false
+					err := GrammerErr(") is too much")
+					return &err
 				}
 			}
 		default:
-			return false
+			err := GrammerErr(fmt.Sprintf("w.val is not valid type", w.val))
+			return &err
 		}
 	}
-	return !readNumOrOp && pCnt == 0
+	if pCnt != 0 {
+		err := GrammerErr(") is less than (")
+		return &err
+	} else if readNumOrOp {
+		err := GrammerErr("last word should be number")
+		return &err
+	} else {
+		return nil
+	}
 }
 
 func makeTree(words []word) node {
@@ -126,11 +143,7 @@ func makeTree(words []word) node {
 				panic("wt_number err")
 			}
 			nn := &numNode{val}
-			if tree == nil {
-				tree = nn
-			} else {
-				tree.Concat(nn)
-			}
+			tree = concat(tree, nn)
 		case wt_operation:
 			op, ok := pickOp(w.val)
 			if !ok {
@@ -138,7 +151,7 @@ func makeTree(words []word) node {
 			}
 			op.priority += priority
 			opn := &opNode{op, nil, nil}
-			tree.Concat(opn)
+			tree = concat(tree, opn)
 		}
 	}
 	return tree

@@ -1,14 +1,17 @@
 package calc
 
 // minus number must wrap with parentheses
-func Calc(expression string) float64 {
+func Calc(expression string) (float64, error) {
 	bs := []byte(expression)
 	words := splitWord(bs)
-	if checkGrammer(words) {
-		tree := makeTree(words)
-		if tree != nil {
-			return tree.Calc()
-		}
+	err := checkGrammer(words)
+	if err != nil {
+		return 0, err
 	}
-	return 0
+	tree := makeTree(words)
+	if tree == nil {
+		terr := CalcErr("Empty expression")
+		return 0, &terr
+	}
+	return tree.Calc()
 }

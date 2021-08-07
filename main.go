@@ -7,5 +7,6 @@ import (
 )
 
 func main() {
-	fmt.Println(calc.Calc("1 + 2"))
+	res, err := calc.Calc("1 + 2")
+	fmt.Println(res, err)
 }

@@ -2,14 +2,20 @@ package calc
 
 type operation struct {
 	priority  int
-	calc_call func(float64, float64) float64
+	calc_call func(float64, float64) (float64, error)
 }
 
 var all_operations map[string]operation = map[string]operation{
-	"+": {1, func(a, b float64) float64 { return a + b }},
-	"-": {1, func(a, b float64) float64 { return a - b }},
-	"*": {2, func(a, b float64) float64 { return a * b }},
-	"/": {2, func(a, b float64) float64 { return a / b }},
+	"+": {1, func(a, b float64) (float64, error) { return a + b, nil }},
+	"-": {1, func(a, b float64) (float64, error) { return a - b, nil }},
+	"*": {2, func(a, b float64) (float64, error) { return a * b, nil }},
+	"/": {2, func(a, b float64) (float64, error) {
+		if b == 0 {
+			err := CalcErr("divide zero")
+			return 0, &err
+		}
+		return a / b, nil
+	}},
 }
 
 func pickOp(opStr string) (operation, bool) {

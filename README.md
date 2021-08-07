@@ -5,7 +5,7 @@ This is a toy project for my go practice.
 I'm new to golang. 
 
 This project help me familiar with features of go. Such as
-1. how to impore local packages
+1. how to import local packages
 2. difference between pointer of struct and interface
 3. error code & enum presentation
 4. buildin testing module

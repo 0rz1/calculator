@@ -9,9 +9,9 @@ type wordType int
 
 const (
 	wt_parentheses wordType = iota
-	wt_number      wordType = iota
-	wt_operator    wordType = iota
-	wt_invalid     wordType = iota
+	wt_number
+	wt_operator
+	wt_invalid
 )
 
 type word struct {

@@ -17,7 +17,7 @@ func (n *numNode) Merge(x int, ch node) {
 }
 
 type opNode struct {
-	op    operation
+	op    operator
 	left  node
 	right node
 }

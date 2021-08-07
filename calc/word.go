@@ -111,7 +111,7 @@ func checkGrammer(words []word) error {
 				}
 			}
 		default:
-			err := GrammerErr(fmt.Sprintf("w.val is not valid type", w.val))
+			err := GrammerErr(fmt.Sprintf("%v is not valid type", w.val))
 			return &err
 		}
 	}

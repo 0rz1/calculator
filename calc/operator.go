@@ -27,7 +27,7 @@ func pickOp(opStr string) (operator, bool) {
 	return operator{}, false
 }
 
-func pickOpBs(bs []byte) []byte {
+func pickOpBsPre(bs []byte) []byte {
 	for k, _ := range all_operators {
 		ks := []byte(k)
 		if len(ks) <= len(bs) && string(bs[:len(ks)]) == k {

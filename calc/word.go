@@ -10,7 +10,7 @@ type wordType int
 const (
 	wt_parentheses wordType = iota
 	wt_number      wordType = iota
-	wt_operation   wordType = iota
+	wt_operator    wordType = iota
 	wt_invalid     wordType = iota
 )
 
@@ -26,7 +26,7 @@ func (w *word) Valid() bool {
 	case wt_number:
 		_, err := strconv.ParseFloat(w.val, 64)
 		return err == nil
-	case wt_operation:
+	case wt_operator:
 		_, ok := pickOp(w.val)
 		return ok
 	default:
@@ -37,9 +37,9 @@ func (w *word) Valid() bool {
 func splitWord(bs []byte) (words []word) {
 	length := len(bs)
 	for i := 0; i < length; {
-		opbs := pickOpBs(bs[i:])
+		opbs := pickOpBsPre(bs[i:])
 		if opbs != nil {
-			words = append(words, word{string(opbs), wt_operation})
+			words = append(words, word{string(opbs), wt_operator})
 			i += len(opbs)
 		} else if bs[i] == '(' {
 			words = append(words, word{string(bs[i : i+1]), wt_parentheses})
@@ -89,7 +89,7 @@ func checkGrammer(words []word) error {
 				return &err
 			}
 			readNumOrOp = false
-		case wt_operation:
+		case wt_operator:
 			if readNumOrOp {
 				err := GrammerErr("need number but op")
 				return &err
@@ -140,14 +140,14 @@ func makeTree(words []word) node {
 		case wt_number:
 			val, err := strconv.ParseFloat(w.val, 64)
 			if err != nil {
-				panic("wt_number err")
+				panic("numNode trans err")
 			}
 			nn := &numNode{val}
 			tree = concat(tree, nn)
-		case wt_operation:
+		case wt_operator:
 			op, ok := pickOp(w.val)
 			if !ok {
-				panic("wt_operation err")
+				panic("opNode trans err")
 			}
 			op.priority += priority
 			opn := &opNode{op, nil, nil}

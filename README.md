@@ -20,4 +20,6 @@ Most confusing problem is I want to accept minus number expression such like 1+-
 
 At last, I give up once scanning stratagies and first analyze word then make grammer tree to solve it, so that it can solve 1+(-2).
 
-Coding is an adventure and I enjoy it.
+Tests make you more confident. test first or you would find test be more complicate.
+
+Coding is tour full of adventures and I enjoy it.

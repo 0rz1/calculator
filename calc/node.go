@@ -9,7 +9,7 @@ func (n numNode) Calc() (float64, error) {
 }
 
 func (n numNode) Priority() int {
-	return -1
+	return 1 << 30
 }
 
 func (n *numNode) Merge(x int, ch node) {
@@ -61,7 +61,7 @@ func concat(a node, b node) node {
 	if b == nil {
 		return a
 	}
-	if a.Priority() >= b.Priority() {
+	if a.Priority() < b.Priority() {
 		a.Merge(1, b)
 		return a
 	} else {

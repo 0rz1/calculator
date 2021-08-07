@@ -14,7 +14,7 @@ func (e *WordValidErr) Error() string {
 	switch e.wt {
 	case wt_number:
 		return fmt.Sprintf("number %v is not valid", e.val)
-	case wt_operation:
+	case wt_operator:
 		return fmt.Sprintf("op %v is not valid", e.val)
 	case wt_parentheses:
 		return fmt.Sprintf("parentheses %v is not valid", e.val)
